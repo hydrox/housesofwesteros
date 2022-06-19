@@ -23,7 +23,7 @@ class HouseRepository(private val api: GoTService) {
 
     suspend fun getHouse(houseId: Int): Flow<House?> = withContext(Dispatchers.IO) {
         val resultFlow = MutableSharedFlow<House?>()
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             resultFlow.emit(api.getHouse(houseId))
         }
         resultFlow
@@ -31,7 +31,7 @@ class HouseRepository(private val api: GoTService) {
 
     suspend fun getCharacter(houseId: Int): Flow<Character?> = withContext(Dispatchers.IO) {
         val resultFlow = MutableSharedFlow<Character?>()
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             resultFlow.emit(api.getCharacter(houseId))
         }
         resultFlow
