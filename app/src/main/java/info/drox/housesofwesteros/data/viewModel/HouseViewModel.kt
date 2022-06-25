@@ -26,14 +26,14 @@ class HouseViewModel(
     }
 
     fun getHouse(url: URL): Flow<House?> {
-        Log.d("HouseViewModel", "getHouse() called with: url = $url")
+        Log.v("HouseViewModel", "getHouse() called with: url = $url")
         return runBlocking {
             repository.getHouse(url)
         }
     }
 
     fun getCharacter(url: URL): Flow<Character?> {
-        Log.d("HouseViewModel", "getCharacter() called with: url = $url")
+        Log.v("HouseViewModel", "getCharacter() called with: url = $url")
         return runBlocking {
             repository.getCharacter(url)
         }

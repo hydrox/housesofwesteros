@@ -8,8 +8,9 @@ import androidx.room.TypeConverters
 import info.drox.housesofwesteros.data.Converters
 import info.drox.housesofwesteros.data.model.Character
 import info.drox.housesofwesteros.data.model.House
+import info.drox.housesofwesteros.data.model.RemoteKey
 
-@Database(entities = [Character::class, House::class], version = 1)
+@Database(entities = [Character::class, House::class, RemoteKey::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class GoTDatabase: RoomDatabase() {
     companion object {
@@ -34,4 +35,5 @@ abstract class GoTDatabase: RoomDatabase() {
 
     abstract fun characterDao(): CharacterDao
     abstract fun houseDao(): HouseDao
+    abstract fun remoteKeyDao(): RemoteKeyDao
 }

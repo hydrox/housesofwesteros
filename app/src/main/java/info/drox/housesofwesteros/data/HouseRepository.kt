@@ -1,6 +1,7 @@
 package info.drox.housesofwesteros.data
 
 import android.app.Application
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -17,17 +18,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URL
 
-class HouseRepository(application: Application, private val api: GoTService) {
-    val db = GoTDatabase.getDatabase(application)
+@OptIn(ExperimentalPagingApi::class)
+class HouseRepository(application: Application, private val api: GoTService, private val pageSize: Int = 10) {
+    private val db = GoTDatabase.getDatabase(application)
 
     fun getHouses(): Flow<PagingData<House>> {
-        return Pager(config = PagingConfig(pageSize = 20, prefetchDistance = 50), pagingSourceFactory = {
-                HousesDataSource(api, db)
-            }).flow
+        return Pager(config = PagingConfig(pageSize = pageSize, prefetchDistance = 50), remoteMediator = HousesDataSource(api, db, pageSize)) {
+            db.houseDao().getPagingSource()
+        }.flow
     }
 
     suspend fun getHouse(url: URL): Flow<House?> = withContext(Dispatchers.IO) {
-        val resultFlow = MutableSharedFlow<House?>()
         CoroutineScope(Dispatchers.IO).launch {
             db.houseDao().insert(api.getHouse(House.getIDFromUrl(url)))
         }
@@ -35,7 +36,6 @@ class HouseRepository(application: Application, private val api: GoTService) {
     }
 
     suspend fun getCharacter(url: URL): Flow<Character?> = withContext(Dispatchers.IO) {
-        val resultFlow = MutableSharedFlow<Character?>()
         CoroutineScope(Dispatchers.IO).launch {
             db.characterDao().insert(api.getCharacter(Character.getIDFromUrl(url)))
         }
