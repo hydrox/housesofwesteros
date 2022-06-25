@@ -19,9 +19,7 @@ import kotlinx.coroutines.withContext
 import java.net.URL
 
 @OptIn(ExperimentalPagingApi::class)
-class HouseRepository(application: Application, private val api: GoTService, private val pageSize: Int = 10) {
-    private val db = GoTDatabase.getDatabase(application)
-
+class HouseRepository(private val api: GoTService, private val db: GoTDatabase, private val pageSize: Int = 10) {
     fun getHouses(): Flow<PagingData<House>> {
         return Pager(config = PagingConfig(pageSize = pageSize, prefetchDistance = 50), remoteMediator = HousesDataSource(api, db, pageSize)) {
             db.houseDao().getPagingSource()

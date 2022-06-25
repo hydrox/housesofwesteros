@@ -9,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import info.drox.housesofwesteros.data.HouseRepository
 import info.drox.housesofwesteros.data.api.GoTService
+import info.drox.housesofwesteros.data.db.GoTDatabase
 import info.drox.housesofwesteros.data.model.Character
 import info.drox.housesofwesteros.data.model.House
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,7 @@ class HouseViewModel(
     application: Application,
     private val savedState: SavedStateHandle
 ): AndroidViewModel(application) {
-    private val repository = HouseRepository(application, GoTService.getInstance(application))
+    private val repository = HouseRepository(GoTService.getInstance(application), GoTDatabase.getDatabase(application))
 
     fun listOfHouses(): Flow<PagingData<House>> {
         return repository.getHouses().cachedIn(viewModelScope)
