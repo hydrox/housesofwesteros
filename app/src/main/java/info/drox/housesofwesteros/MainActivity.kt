@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                         val viewModel: HouseViewModel = viewModel()
                         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
                             backStackEntry.arguments?.getInt("houseId")?.let {
-                                val houseState = remember { viewModel.getHouse(it) }.collectAsState(initial = null)
+                                val houseState = remember { viewModel.getHouse(House.getUrlFromId(it)) }.collectAsState(initial = null)
                                 houseState.value?.let { house ->
                                     HouseDetails(house = house, navHostController = navController)
                                 }
@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         val viewModel: HouseViewModel = viewModel()
                         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
                             backStackEntry.arguments?.getInt("characterId")?.let {
-                                val characterState = remember { viewModel.getCharacter(it) }.collectAsState(initial = null)
+                                val characterState = remember { viewModel.getCharacter(Character.getUrlFromId(it)) }.collectAsState(initial = null)
                                 characterState.value?.let { character ->
                                     CharacterDetails(character = character, navHostController = navController)
                                 }
@@ -133,7 +133,7 @@ fun HouseDetails(house: House, navHostController: NavHostController? = null, vie
             for (member in house.swornMembers) {
                 Uri.parse(member).lastPathSegment?.let { characterId ->
                     val characterState =
-                        remember { viewModel.getCharacter(characterId.toInt()) }.collectAsState(
+                        remember { viewModel.getCharacter(URL(member)) }.collectAsState(
                             initial = null
                         )
                     characterState.value?.let { character ->
@@ -172,43 +172,46 @@ fun CharacterDetails(character: Character, navHostController: NavHostController,
             Text("Culture: ${character.culture}", style = MaterialTheme.typography.body1)
         }
         character.mother.let {
-            Uri.parse(it).lastPathSegment?.let { characterId ->
-                val characterState =
-                    remember { viewModel.getCharacter(characterId.toInt()) }.collectAsState(
-                        initial = null
-                    )
-                characterState.value?.let { character ->
-                    Row {
-                        Text("Mother", style = MaterialTheme.typography.h4)
-                        CharacterShort(character) { navHostController.navigate("characters/${characterId}") }
-                    }
+            if (it == "") {
+                return@let
+            }
+            val characterState =
+                remember { viewModel.getCharacter(URL(it)) }.collectAsState(
+                    initial = null
+                )
+            characterState.value?.let { character ->
+                Row {
+                    Text("Mother", style = MaterialTheme.typography.h4)
+                    CharacterShort(character) { navHostController.navigate("characters/${character.id}") }
                 }
             }
         }
         character.father.let {
-            Uri.parse(it).lastPathSegment?.let { characterId ->
-                val characterState =
-                    remember { viewModel.getCharacter(characterId.toInt()) }.collectAsState(
-                        initial = null
-                    )
-                characterState.value?.let { character ->
-                    Row {
-                        Text("Father", style = MaterialTheme.typography.h4)
-                        CharacterShort(character) { navHostController.navigate("characters/${characterId}") }
-                    }
+            if (it == "") {
+                return@let
+            }
+            val characterState =
+                remember { viewModel.getCharacter(URL(it)) }.collectAsState(
+                    initial = null
+                )
+            characterState.value?.let { character ->
+                Row {
+                    Text("Father", style = MaterialTheme.typography.h4)
+                    CharacterShort(character) { navHostController.navigate("characters/${character.id}") }
                 }
             }
         }
         character.spouse.let {
-            Uri.parse(it).lastPathSegment?.let { characterId ->
-                Text("Spouse", style = MaterialTheme.typography.h4)
-                val characterState =
-                    remember { viewModel.getCharacter(characterId.toInt()) }.collectAsState(
-                        initial = null
-                    )
-                characterState.value?.let { character ->
-                    CharacterShort(character) { navHostController.navigate("characters/${characterId}") }
-                }
+            if (it == "") {
+                return@let
+            }
+            Text("Spouse", style = MaterialTheme.typography.h4)
+            val characterState =
+                remember { viewModel.getCharacter(URL(it)) }.collectAsState(
+                    initial = null
+                )
+            characterState.value?.let { character ->
+                CharacterShort(character) { navHostController.navigate("characters/${character.id}") }
             }
         }
         if (character.titles.any { it != "" }) {
@@ -227,16 +230,13 @@ fun CharacterDetails(character: Character, navHostController: NavHostController,
         if (character.allegiances.any { it != "" }) {
             Text("Allegiances", style = MaterialTheme.typography.h4)
             for (allegiance in character.allegiances) {
-                Uri.parse(allegiance).lastPathSegment?.let { houseId ->
-                    val houseState =
-                        remember { viewModel.getHouse(houseId.toInt()) }.collectAsState(
-                            initial = null
-                        )
-                    houseState.value?.let { house ->
-                        HouseItem(house) { navHostController.navigate("houses/${houseId}") }
-                    }
+                val houseState =
+                    remember { viewModel.getHouse(URL(allegiance)) }.collectAsState(
+                        initial = null
+                    )
+                houseState.value?.let { house ->
+                    HouseItem(house) { navHostController.navigate("houses/${house.id}") }
                 }
-
             }
         }
 

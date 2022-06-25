@@ -3,11 +3,13 @@ package info.drox.housesofwesteros.data.api
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import info.drox.housesofwesteros.data.db.GoTDatabase
 import info.drox.housesofwesteros.data.model.House
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HousesDataSource(private val api: GoTService) : PagingSource<Int, House>() {
+class HousesDataSource(private val api: GoTService, private val db: GoTDatabase) : PagingSource<Int, House>() {
     companion object {
         private const val TAG = "HousesDataSource"
     }
@@ -18,6 +20,9 @@ class HousesDataSource(private val api: GoTService) : PagingSource<Int, House>()
             try {
                 val nextPageNumber = params.key ?: 1
                 val response = api.listHouses(nextPageNumber)
+                launch {
+                    db.houseDao().insertAll(response)
+                }
 
                 LoadResult.Page(
                     data = response,

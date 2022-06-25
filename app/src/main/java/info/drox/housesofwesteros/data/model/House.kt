@@ -1,9 +1,14 @@
 package info.drox.housesofwesteros.data.model
 
+import android.net.Uri
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import java.net.URL
 
+@Entity
 data class House(
-    val url: URL,
+    @PrimaryKey val url: URL,
     val name: String,
     val words: String,
     val region: String,
@@ -13,6 +18,14 @@ data class House(
     val seats: Array<String>,
     val swornMembers: Array<String>
 ) {
+    companion object {
+        fun getIDFromUrl(url: URL): Int = Uri.parse(url.toString()).lastPathSegment!!.toInt()
+        fun getUrlFromId(id: Int): URL = URL("https://www.anapioficeandfire.com/api/houses/$id")
+    }
+
+    @Ignore
+    val id: Int = Character.getIDFromUrl(url)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
