@@ -26,14 +26,14 @@ class HouseRepository(private val api: GoTService, private val db: GoTDatabase, 
         }.flow
     }
 
-    suspend fun getHouse(url: URL): Flow<House?> = withContext(Dispatchers.IO) {
+    suspend fun getHouse(url: URL): Flow<House> = withContext(Dispatchers.IO) {
         CoroutineScope(Dispatchers.IO).launch {
             db.houseDao().insert(api.getHouse(House.getIDFromUrl(url)))
         }
         db.houseDao().getByUrl(url)
     }
 
-    suspend fun getCharacter(url: URL): Flow<Character?> = withContext(Dispatchers.IO) {
+    suspend fun getCharacter(url: URL): Flow<Character> = withContext(Dispatchers.IO) {
         CoroutineScope(Dispatchers.IO).launch {
             db.characterDao().insert(api.getCharacter(Character.getIDFromUrl(url)))
         }

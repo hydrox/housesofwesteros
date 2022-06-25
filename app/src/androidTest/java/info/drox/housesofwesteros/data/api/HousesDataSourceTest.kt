@@ -1,12 +1,11 @@
 package info.drox.housesofwesteros.data.api
 
-import android.util.Log
 import androidx.paging.*
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import info.drox.housesofwesteros.data.db.GoTDatabase
-import info.drox.housesofwesteros.data.mockGoTService
+import info.drox.housesofwesteros.data.MockGoTService
 import info.drox.housesofwesteros.data.model.House
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
@@ -23,31 +22,31 @@ import java.net.URL
 class HousesDataSourceTest {
     private val mockHouses = listOf(
         House(
-            URL("https://example.local/1"),
+            URL("https://www.anapioficeandfire.com/api/houses/1"),
             "Test Haus",
             "Wörter sind Schall und Rauch",
             "Irgendwo", "", "", emptyArray(), emptyArray()
             , emptyArray()),
         House(
-            URL("https://example.local/2"),
+            URL("https://www.anapioficeandfire.com/api/houses/2"),
             "Test Haus",
             "Wörter sind Schall und Rauch",
             "Irgendwo", "", "", emptyArray(), emptyArray()
             , emptyArray()),
         House(
-            URL("https://example.local/3"),
+            URL("https://www.anapioficeandfire.com/api/houses/3"),
             "Test Haus",
             "Wörter sind Schall und Rauch",
             "Irgendwo", "", "", emptyArray(), emptyArray()
             , emptyArray()),
         House(
-            URL("https://example.local/4"),
+            URL("https://www.anapioficeandfire.com/api/houses/4"),
             "Test Haus",
             "Wörter sind Schall und Rauch",
             "Irgendwo", "", "", emptyArray(), emptyArray()
             , emptyArray())
     )
-    private val mockApi = mockGoTService(mockHouses, emptyList())
+    private val mockApi = MockGoTService(mockHouses, emptyList())
 
     private val mockDb = Room.inMemoryDatabaseBuilder(
         ApplicationProvider.getApplicationContext(),
@@ -59,7 +58,6 @@ class HousesDataSourceTest {
     @Test
     fun loadReturnsPageWhenOnSuccessfulLoad() = runTest {
         val remoteMediator = HousesDataSource(api = mockApi, db = mockDb, 2)
-        Log.d("iae", mockApi.listHouses(1, 2).toString())
         val pagingState = PagingState<Int, House>(
             listOf(),
             null,
@@ -74,7 +72,6 @@ class HousesDataSourceTest {
     @Test
     fun loadSuccessAndEndOfPaginationWhenNoMoreData() = runTest {
         val remoteMediator = HousesDataSource(api = mockApi, db = mockDb, 5)
-        Log.d("iae", mockApi.listHouses(1, 5).toString())
         val pagingState = PagingState<Int, House>(
             listOf(),
             null,
@@ -88,7 +85,6 @@ class HousesDataSourceTest {
 
     @Test
     fun refreshLoadReturnsErrorResultWhenErrorOccurs() = runTest {
-        // Set up failure message to throw exception from the mock API.
         val remoteMediator = HousesDataSource(api = mockApi, db = mockDb, 2)
         mockApi.fails = true
 
@@ -106,6 +102,5 @@ class HousesDataSourceTest {
     fun tearDown() {
         mockDb.clearAllTables()
         mockApi.fails = false
-        // Clear out failure message to default to the successful response.
     }
 }
