@@ -24,7 +24,7 @@ data class House(
     }
 
     @Ignore
-    val id: Int = Character.getIDFromUrl(url)
+    val id: Int = getIDFromUrl(url)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

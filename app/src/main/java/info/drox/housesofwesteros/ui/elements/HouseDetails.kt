@@ -1,6 +1,5 @@
 package info.drox.housesofwesteros.ui.elements
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +23,7 @@ import java.net.URL
 fun HouseDetails(house: House, navHostController: NavHostController? = null, viewModel: HouseViewModel = viewModel()) {
     Column(
         modifier = Modifier
+            .padding(15.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Text(house.name, style = MaterialTheme.typography.h3)
@@ -36,9 +36,9 @@ fun HouseDetails(house: House, navHostController: NavHostController? = null, vie
                 Text(title, modifier = Modifier.padding(start = 12.dp), style = MaterialTheme.typography.body1)
             }
         }
-        if (house.swornMembers.isNotEmpty()) {
+        if (house.swornMembers.any { it != "" }) {
             Text("Members", style = MaterialTheme.typography.h4)
-            for (member in house.swornMembers) {
+            for (member in house.swornMembers.filter { it != "" }) {
                 val characterState =
                     remember { viewModel.getCharacter(URL(member)) }.collectAsState(
                         initial = null
@@ -56,7 +56,7 @@ fun HouseDetails(house: House, navHostController: NavHostController? = null, vie
 fun HouseDetailsPreview() {
     HousesOfWesterosTheme {
         HouseDetails(House(
-            URL("https://example.local"),
+            URL("https://example.local/1"),
             "Test Haus",
             "Wörter sind Schall und Rauch",
             "Irgendwo", "", "", emptyArray(), emptyArray()
@@ -69,7 +69,7 @@ fun HouseDetailsPreview() {
 fun HouseDetailsDarkPreview() {
     HousesOfWesterosTheme(darkTheme = true) {
         HouseDetails(House(
-            URL("https://example.local"),
+            URL("https://example.local/1"),
             "Test Haus",
             "Wörter sind Schall und Rauch",
             "Irgendwo", "", "", emptyArray(), emptyArray()

@@ -1,6 +1,7 @@
 package info.drox.housesofwesteros.ui.elements
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -17,8 +18,11 @@ import java.net.URL
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HouseItem(house: House, onClickSource: () -> Unit) {
-    Card(onClick = { onClickSource() }, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)) {
-        Column {
+    Card(onClick = { onClickSource() }, modifier = Modifier
+        .fillMaxWidth()
+        .padding(15.dp),
+        elevation = 10.dp) {
+        Column(modifier = Modifier.padding(15.dp)) {
             Text(house.name, style = MaterialTheme.typography.h5)
             Text("Region: ${house.region.ifBlank { "unknown" }}", style = MaterialTheme.typography.body1)
             Text("Words: ${house.words.ifBlank { "unknown" }}", style = MaterialTheme.typography.body1)

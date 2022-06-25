@@ -18,8 +18,8 @@ import java.net.URL
 
 @Composable
 fun CharacterDetails(character: Character, navHostController: NavHostController, viewModel: HouseViewModel = viewModel()) {
-    Column {
-        Text("Name: ${character.name}", style = MaterialTheme.typography.h3)
+    Column(modifier = Modifier.padding(15.dp)) {
+        Text(character.name.ifBlank { "Name unknown" }, style = MaterialTheme.typography.h3)
         if (character.born != "") {
             Text("Birth: ${character.born}", style = MaterialTheme.typography.body1)
         }
