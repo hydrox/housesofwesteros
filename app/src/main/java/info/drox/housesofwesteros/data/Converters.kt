@@ -1,7 +1,11 @@
 package info.drox.housesofwesteros.data
 
 import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 import java.net.URL
+
 
 object Converters {
     @JvmStatic
@@ -18,13 +22,15 @@ object Converters {
 
     @JvmStatic
     @TypeConverter
-    fun stringArrayFromString(value: String?): Array<String>? {
-        return value?.split("|||")?.toTypedArray()
+    fun stringArrayfromString(value: String?): Array<String> {
+        val listType: Type = object : TypeToken<Array<String?>?>() {}.type
+        return Gson().fromJson(value, listType)
     }
 
     @JvmStatic
     @TypeConverter
-    fun stringArrayToString(array: Array<String>?): String? {
-        return array?.joinToString("|||")
+    fun stringArrayToString(array: Array<String?>?): String {
+        val gson = Gson()
+        return gson.toJson(array)
     }
 }

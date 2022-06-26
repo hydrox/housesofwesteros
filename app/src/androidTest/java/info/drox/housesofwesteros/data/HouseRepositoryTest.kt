@@ -96,7 +96,7 @@ class HouseRepositoryTest {
         assertEquals(mockCharacter, character)
     }
 
-    @Test(expected = HttpException::class)
+    @Test
     fun failToLoadNonExistingCharacter() = runTest {
         val repository = HouseRepository(mockApi, mockDb)
 
